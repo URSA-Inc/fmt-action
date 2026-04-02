@@ -1,0 +1,51 @@
+name: "FMT Equivalence Checker"
+description: "Prove functional equivalence between two functions using formal methods"
+author: "URSA-Inc"
+branding:
+  icon: "check-circle"
+  color: "blue"
+
+inputs:
+  api_key:
+    description: "FMT API key — store as a GitHub Actions secret"
+    required: true
+  function_a:
+    description: "First function source code (inline string)"
+    required: true
+  function_b:
+    description: "Second function source code to compare against"
+    required: true
+  language:
+    description: "Programming language of the functions"
+    required: false
+    default: "python"
+  timeout:
+    description: "Proof timeout in seconds"
+    required: false
+    default: "30"
+  api_url:
+    description: "FMT API base URL (override for testing)"
+    required: false
+    default: "https://api.fmt.ursasecure.com"
+
+outputs:
+  job_id:
+    description: "The equivalence check job ID"
+  equivalent:
+    description: "Whether the functions are proven equivalent (true/false/unknown)"
+  status:
+    description: "Final job status (complete/failed)"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run FMT equivalence check
+      shell: bash
+      run: bash ${{ github.action_path }}/src/run.sh
+      env:
+        FMT_API_KEY: ${{ inputs.api_key }}
+        FMT_FUNCTION_A: ${{ inputs.function_a }}
+        FMT_FUNCTION_B: ${{ inputs.function_b }}
+        FMT_LANGUAGE: ${{ inputs.language }}
+        FMT_TIMEOUT: ${{ inputs.timeout }}
+        FMT_API_URL: ${{ inputs.api_url }}
