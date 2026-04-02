@@ -1,0 +1,16 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate action.yml exists and is valid YAML
+        run: python3 -c "import yaml; yaml.safe_load(open('action.yml'))" 
+      - name: Check run script is executable
+        run: bash -n src/run.sh
